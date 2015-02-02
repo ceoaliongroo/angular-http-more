@@ -7,8 +7,8 @@
  * # restful
  * Service in to perform restful request.
  */
-angular.module('elementModule')
-  .service('Restful', function ($q, $http, $timeout, $rootScope) {
+angular.module('elementModule', [])
+  .service('Restful', function RestfulService($q, $http, $timeout, $rootScope) {
 
     // Configuration used to get and configure restful service.
     var options;

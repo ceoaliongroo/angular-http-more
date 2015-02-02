@@ -7,8 +7,8 @@ describe('Service: angularHttpPlus', function () {
 
   // instantiate service
   var testService;
-  beforeEach(inject(function (_testService_) {
-    testService = _testService_;
+  beforeEach(inject(function (_Restful_) {
+    testService = _Restful_;
   }));
 
   it('should do something', function () {

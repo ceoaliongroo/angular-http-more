@@ -9,9 +9,7 @@
  */
 angular.module('elementModule', [])
   .service('Restful', function RestfulService($q, $http, $timeout, $rootScope) {
-
-    // Configuration used to get and configure restful service.
-    var options;
+    var self = this;
 
     // A private cache key.
     var cache = {};
@@ -19,6 +17,9 @@ angular.module('elementModule', [])
 
     // Promise cache.
     var getData;
+
+    // Configuration used to get and configure restful service.
+    this.options = {};
 
     /**
      * Return the promise with the events list, from cache or the server.
@@ -31,10 +32,13 @@ angular.module('elementModule', [])
      *  transformResponse: function - Function of a transformation of response of the response.
      *
      * @returns {*}
+     *  The promise resolve/reject
      */
     this.get = function (options) {
-      setOptions(options);
+      // Configure the promise server request, only if not cache defined.
+      angular.extend(self.options, options);
 
+      // Get the Data.
       getData = $q.when(getData || getCache() || getDataFromBackend());
 
       getData.finalize(function getDataFinalize() {
@@ -44,17 +48,20 @@ angular.module('elementModule', [])
       return getData;
     };
 
-    function setOption(params) {
+    /**
+     * Set the configuration of the
+     *
+     * @param params
+     */
+    function setOptions(params) {
       var re = /[^\/]*$/;
 
-      options = params;
-
       // Set resource name.
-      options.name = re.exec(optiosn.url);
+      self.options.name = re.exec(params.url);
 
       // Push the data transformation of exist.
       if (angular.isDefined(options.transformResponse) && fn(options.transformResponse)) {
-        options.transformResponse = [prepareResponse, options.transformResponse];
+        self.options.transformResponse = [prepareResponse, options.transformResponse];
       }
     }
 
@@ -66,12 +73,18 @@ angular.module('elementModule', [])
      */
     function getDataFromBackend() {
       var deferred = $q.defer();
-      var url = options.url;
+
+      // Configure the service
+      //setOptions(options);
+
+      //
+      var url = self.options.url;
+
 
       $http({
         method: 'GET',
         url: url,
-        transformResponse: options.transformResponse
+        transformResponse: self.options.transformResponse
       }).success(function (response) {
         setCache(response);
         deferred.resolve(response);

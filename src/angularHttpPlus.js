@@ -42,24 +42,14 @@ angular.module('elementModule', [])
     /**
      * Return the promise with the events list, from cache or the server.
      *
-     * @params options
-     *  An object with the configuration of the restful service that wants
-     *  to get.
-     *
-     *  see details in setOptions method.
-     *
      * @returns {*}
      *  The promise resolve/reject
      */
-    this.get = function (options) {
-      // Configuration.
-      self.setConfig(options);
-
-      //
+    this.get = function () {
+      // Reject the promise if the service it's not configured.
       if (!Object.keys(config).length) {
         return;
       }
-
 
       // Get the Data.
       getData = $q.when(getData || getCache() || getDataFromBackend());
@@ -97,13 +87,10 @@ angular.module('elementModule', [])
     function getDataFromBackend() {
       var deferred = $q.defer();
 
-      //
-      var url = self.options.url;
-
       $http({
         method: 'GET',
-        url: url,
-        transformResponse: self.options.transformResponse
+        url: config.url,
+        transformResponse: config.transformResponse
       }).success(function (response) {
         setCache(response);
         deferred.resolve(response);

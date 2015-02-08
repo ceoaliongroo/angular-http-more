@@ -117,7 +117,7 @@ angular.module('elementModule', [])
       }, 60000);
 
       // Broadcast a change event.
-      $rootScope.$broadcast('restful' + options.name + 'Changed');
+      $rootScope.$broadcast('restfulChanged');
     }
 
     /**

@@ -6,15 +6,16 @@ describe('Service: Restful', function () {
   beforeEach(module('elementModule'));
 
   // instantiate service
-  var httpBackend;
+  var httpBackend, $q, getData;
   var restfulService;
   var resourceService = {};
   // mock options, configuration fo server request.
   var options;
 
-  beforeEach(inject(function (_Restful_, _$httpBackend_) {
+  beforeEach(inject(function (_Restful_, _$httpBackend_, _$q_) {
     httpBackend = _$httpBackend_;
     restfulService = _Restful_;
+    $q = _$q_;
     // Extend the service.
     angular.extend(resourceService, restfulService);
 
@@ -23,7 +24,8 @@ describe('Service: Restful', function () {
       transformResponse: angular.noop
     }
 
-    httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
+    //
+    getData = $q.defer().promise;
 
   }));
 
@@ -42,12 +44,17 @@ describe('Service: Restful', function () {
 
   // Configuration of the service.
   it('should to set options', function () {
+    // Set configuration.
     resourceService.setConfig(options);
 
-    httpBackend.expectGET(options.url);
-    resourceService.get();
+    // Set spy.
+    //spyOn(getData, 'finalize').andReturn(undefined);
 
-    expect(result.info).toContain('ok');
+    httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
+    resourceService.get().then(function(result) {
+      expect(result.info).toContain('ok');
+    });
+    httpBackend.flush();
   });
 
 });

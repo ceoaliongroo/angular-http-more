@@ -9,30 +9,22 @@ describe('Service: Restful', function () {
   var httpBackend, $q, getData;
   var restfulService;
   var resourceService = {};
-  // mock options, configuration fo server request.
-  var options;
 
-  beforeEach(inject(function (_Restful_, _$httpBackend_, _$q_) {
-    httpBackend = _$httpBackend_;
+  beforeAll(inject(function (_Restful_, _$httpBackend_, _$q_) {
     restfulService = _Restful_;
+    httpBackend = _$httpBackend_;
     $q = _$q_;
+
     // Extend the service.
     angular.extend(resourceService, restfulService);
 
-    options = {
-      url: 'http://server.com/api',
-      transformResponse: angular.noop
-    }
-
-    //
-    getData = $q.defer().promise;
-
   }));
 
-  afterEach(function () {
+  afterAll(function () {
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
   });
+
 
   it('should be defined', function () {
     expect(!!restfulService).toBe(true);
@@ -42,19 +34,57 @@ describe('Service: Restful', function () {
     expect(!!resourceService.setConfig).toBeDefined(true);
   });
 
-  // Configuration of the service.
-  it('should to set options', function () {
-    // Set configuration.
-    resourceService.setConfig(options);
+  describe('get() promise reject', function() {
 
-    // Set spy.
-    //spyOn(getData, 'finalize').andReturn(undefined);
 
-    httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
-    resourceService.get().then(function(result) {
-      expect(result.info).toContain('ok');
+    it('should not configure options.', function () {
+      expect('ok').toContain('ok');
     });
-    httpBackend.flush();
+
+    it('should .', function () {
+      expect('ok').toContain('ok');
+    });
+
+
+
   });
+
+  describe('get() data from the server', function() {
+
+    beforeEach(function() {
+      // Mock service configuration.
+      var options = {
+        url: 'http://server.com/api',
+        transformResponse: angular.noop
+      }
+
+      // Define private variable.
+      var cache = {}
+      var getData;
+      var config;
+
+      httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
+      resourceService.get().then(function(result) {
+        expect(result.info).toContain('ok');
+      });
+      httpBackend.flush();
+
+    });
+
+    // Test promise is resolve
+    it('should return promise rejected, if not configure.', function () {
+
+      expect('ok').toContain('ok');
+    });
+
+    // Test event thta the caache it's updated.
+    it('should return promise rejected, if not configure.', function () {
+
+      expect('ok').toContain('ok');
+    });
+
+  });
+
+
 
 });

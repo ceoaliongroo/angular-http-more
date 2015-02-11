@@ -1,55 +1,65 @@
 'use strict';
 
-describe('Service: Restful', function () {
+describe('Component: Restful', function () {
 
   // load the service's module
   beforeEach(module('elementModule'));
 
   // instantiate service
-  var httpBackend, $q, getData;
+  var $rootScope;
+  var $httpBackend;
+  var $q;
   var restfulService;
   var resourceService = {};
+  var getData;
 
-  beforeAll(inject(function (_Restful_, _$httpBackend_, _$q_) {
+  beforeEach(inject(function (_Restful_, _$httpBackend_, _$q_, _$rootScope_) {
     restfulService = _Restful_;
-    httpBackend = _$httpBackend_;
+    $rootScope = _$rootScope_;
+    $httpBackend = _$httpBackend_;
     $q = _$q_;
 
     // Extend the service.
     angular.extend(resourceService, restfulService);
 
+    // Define a promise.
+    getData = $q.defer();
+
+    // Define spies.
+    spyOn(resourceService, 'get').and.returnValue(getData.promise);
+
+
   }));
 
-  afterAll(function () {
-    httpBackend.verifyNoOutstandingExpectation();
-    httpBackend.verifyNoOutstandingRequest();
+  afterEach(function () {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
   });
 
-
-  it('should be defined', function () {
-    expect(!!restfulService).toBe(true);
-  });
-
-  it('should be extendable to other services', function () {
-    expect(!!resourceService.setConfig).toBeDefined(true);
-  });
-
-  describe('get() promise reject', function() {
-
-
-    it('should not configure options.', function () {
-      expect('ok').toContain('ok');
+  describe('service', function() {
+    it('should be defined', function () {
+      expect(!!restfulService).toBe(true);
     });
 
-    it('should .', function () {
-      expect('ok').toContain('ok');
+    it('should be extendable to other services', function () {
+      expect(!!resourceService.setConfig).toBeDefined(true);
     });
-
-
-
   });
 
-  describe('get() data from the server', function() {
+  describe('get() without configuration', function() {
+    var reason = new Error('Configuration not defined.');
+    var success = jasmine.createSpy()
+    var error = jasmine.createSpy();
+
+    it('should return a promise rejected.', function () {
+      getData = resourceService.get().then(success, error);
+      $rootScope.$apply();
+      expect(success).not.toHaveBeenCalled();
+      expect(error).toHaveBeenCalled();
+    });
+  });
+
+  xdescribe('get() data from the server', function() {
 
     beforeEach(function() {
       // Mock service configuration.
@@ -63,11 +73,11 @@ describe('Service: Restful', function () {
       var getData;
       var config;
 
-      httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
+      $httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
       resourceService.get().then(function(result) {
         expect(result.info).toContain('ok');
       });
-      httpBackend.flush();
+      $httpBackend.flush();
 
     });
 

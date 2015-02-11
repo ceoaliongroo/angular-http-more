@@ -48,7 +48,7 @@ angular.module('elementModule', [])
     this.get = function () {
       // Reject the promise if the service it's not configured.
       if (!Object.keys(config).length) {
-        return;
+        return $q.reject(new Error('Configuration not defined.'));
       }
 
       // Get the Data.

@@ -22,12 +22,6 @@ describe('Component: Restful', function () {
     // Extend the service.
     angular.extend(resourceService, restfulService);
 
-    // Define a promise.
-    getData = $q.defer();
-
-    // Define spies.
-    spyOn(resourceService, 'get').and.returnValue(getData.promise);
-
 
   }));
 
@@ -47,23 +41,29 @@ describe('Component: Restful', function () {
   });
 
   describe('get() without configuration', function() {
-    var reason = new Error('Configuration not defined.');
-    var success = jasmine.createSpy()
-    var error = jasmine.createSpy();
 
     it('should return a promise rejected.', function () {
-      getData = resourceService.get().then(success, error);
+      var error = jasmine.createSpy();
+      resourceService.get().catch(error);
       $rootScope.$apply();
-      expect(success).not.toHaveBeenCalled();
       expect(error).toHaveBeenCalled();
     });
   });
 
-  xdescribe('get() data from the server', function() {
+  describe('get() data from the server', function() {
+    var success = jasmine.createSpy();
+    var options;
 
     beforeEach(function() {
+      // Define a promise.
+      getData = $q.defer();
+
+      // Define spies.
+      spyOn(resourceService, 'get');
+
+
       // Mock service configuration.
-      var options = {
+      options = {
         url: 'http://server.com/api',
         transformResponse: angular.noop
       }
@@ -73,18 +73,16 @@ describe('Component: Restful', function () {
       var getData;
       var config;
 
+      // Mock API Response.
       $httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
-      resourceService.get().then(function(result) {
-        expect(result.info).toContain('ok');
-      });
-      $httpBackend.flush();
-
     });
 
     // Test promise is resolve
-    it('should return promise rejected, if not configure.', function () {
+    it('should return promise success.', function () {
+      resourceService.setConfig(options);
+      resourceService.get().then(success);
 
-      expect('ok').toContain('ok');
+      expect(success).toHaveBeenCalled();
     });
 
     // Test event thta the caache it's updated.

@@ -59,7 +59,7 @@ describe('Component: Restful', function () {
       getData = $q.defer();
 
       // Define spies.
-      spyOn(resourceService, 'get');
+      //spyOn(resourceService, 'get');
 
 
       // Mock service configuration.

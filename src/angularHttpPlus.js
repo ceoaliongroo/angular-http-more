@@ -54,29 +54,13 @@ angular.module('elementModule', [])
       // Get the Data.
       getData = $q.when(getData || getCache() || getDataFromBackend());
 
-      getData.finalize(function getDataFinalize() {
+      // @todo: check finilize vs Promise API finally.
+      getData.promise.finally(function getDataFinalize() {
         getData = undefined;
       });
 
       return getData;
     };
-
-    /**
-     * Set the configuration of the
-     *
-     * @param params
-     */
-    //function setOptions(params) {
-    //  var re = /[^\/]*$/;
-    //
-    //  // Set resource name.
-    //  self.options.name = re.exec(params.url);
-    //
-    //  // Push the data transformation of exist.
-    //  if (angular.isDefined(options.transformResponse) && fn(options.transformResponse)) {
-    //    self.options.transformResponse = [prepareResponse, options.transformResponse];
-    //  }
-    //}
 
     /**
      * Return data from the server as a array of objects, wrapped in a promise.,

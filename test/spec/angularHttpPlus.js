@@ -21,8 +21,6 @@ describe('Component: Restful', function () {
 
     // Extend the service.
     angular.extend(resourceService, restfulService);
-
-
   }));
 
   afterEach(function () {
@@ -55,40 +53,37 @@ describe('Component: Restful', function () {
     var options;
 
     beforeEach(function() {
-      // Define a promise.
-      getData = $q.defer();
-
-      // Define spies.
-      //spyOn(resourceService, 'get');
-
-
-      // Mock service configuration.
+      // Set service configuration.
       options = {
         url: 'http://server.com/api',
         transformResponse: angular.noop
       }
-
-      // Define private variable.
-      var cache = {}
-      var getData;
-      var config;
-
-      // Mock API Response.
-      $httpBackend.whenGET(options.url).respond(200, {result: 'ok'});
+      // Configure the service.
+      resourceService.setConfig(options);
     });
 
-    // Test promise is resolve
     it('should return promise success.', function () {
-      resourceService.setConfig(options);
+      // Mock API Response.
+      $httpBackend.whenGET(options.url).respond(200);
+
+      // Get Data from the server.
       resourceService.get().then(success);
 
+      $httpBackend.flush();
       expect(success).toHaveBeenCalled();
     });
 
-    // Test event thta the caache it's updated.
-    it('should return promise rejected, if not configure.', function () {
+    it('should get from server data = 1', function () {
+      // Mock API Response.
+      $httpBackend.whenGET(options.url).respond({data: '1'});
 
-      expect('ok').toContain('ok');
+      getData = resourceService.get();
+      $httpBackend.flush();
+
+      // Get Data from the server.
+      getData.then(function(response) {
+        expect(response.data).toEqual('1');
+      });
     });
 
   });

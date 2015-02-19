@@ -54,8 +54,8 @@ angular.module('elementModule', [])
       // Get the Data.
       getData = $q.when(getData || getCache() || getDataFromBackend());
 
-      // @todo: check finilize vs Promise API finally.
-      getData.promise.finally(function getDataFinalize() {
+      // Clean promise cache after promise was resolved or rejected.
+      getData.finally(function getDataFinalize() {
         getData = undefined;
       });
 

@@ -29,7 +29,7 @@ describe('Component: Restful', function () {
     $httpBackend.verifyNoOutstandingRequest();
   });
 
-  xdescribe('service', function() {
+  describe('service', function() {
     it('should be defined', function () {
       expect(!!restfulService).toBe(true);
     });
@@ -39,7 +39,7 @@ describe('Component: Restful', function () {
     });
   });
 
-  xdescribe('get() without configuration', function() {
+  describe('get() without configuration', function() {
 
     it('should return a promise rejected.', function () {
       var error = jasmine.createSpy();
@@ -61,34 +61,38 @@ describe('Component: Restful', function () {
         transformResponse: angular.noop
       }
 
-      // Mock response data from the server.
-      spyOn(get, 'getDataFromBackend').andCallFake(function() {
-        var deferred = $q.defer();
-        deferred.resolve({data: '1'});
-        return deferred.promise;
-      });
-
       // Configure the service.
       resourceService.setConfig(options);
-
-      // Get Data from the server.
-      getData = resourceService.get().then(success);
     });
 
-    xit('should return promise success.', function () {
+    it('should return promise success.', function () {
+      // Get Data from the server.
+      resourceService.get().then(success);
+
       // Mock API Response.
       $httpBackend.whenGET(options.url).respond(200);
       $httpBackend.flush();
       expect(success).toHaveBeenCalled();
     });
 
-    it('should get from server data = 1', function () {
-      // Mock API Response.
-      $httpBackend.whenGET(options.url).respond('{data: "1"}');
-      $httpBackend.flush();
+    it('should get from server data equals "some-data"', function () {
 
+      // Mock response data from the server.
+      spyOn(resourceService, 'get').and.callFake(function() {
+        var deferred = $q.defer();
+        deferred.resolve({data: 'some-data'});
+        return deferred.promise;
+      });
+
+      // Get Data from the server.
+      getData = resourceService.get();
+
+      // Mock API Response.
+      $httpBackend.whenGET(options.url).respond('{data: "some-data"}');
+
+      // Check implementation from the server
       getData.then(function(response) {
-        console.log(response);
+        expect(response.data).toEqual('some-data');
       });
 
     });

@@ -9,9 +9,7 @@
  */
 angular.module('elementModule', [])
   .service('Restful', function RestfulService($q, $http, $timeout, $rootScope) {
-
-    // Configuration used to get and configure restful service.
-    var options;
+    var self = this;
 
     // A private cache key.
     var cache = {};
@@ -20,43 +18,49 @@ angular.module('elementModule', [])
     // Promise cache.
     var getData;
 
+    // Property used to save the configuration Restful service.
+    var config = {};
+
     /**
-     * Return the promise with the events list, from cache or the server.
+     * Permits configure the service
      *
-     * @params options
+     * @param options
      *  An object with the configuration of the restful service that wants
      *  to get.
      *
      *  url: string - Full end point of the resource to get the data. Ex. http://server.com/tasks
      *  transformResponse: function - Function of a transformation of response of the response.
+     */
+    this.setConfig = function(options) {
+      if (angular.isUndefined(options)) {
+        return;
+      }
+      // Configure the promise server request, only if not cache defined.
+      angular.extend(config, options);
+    };
+
+    /**
+     * Return the promise with the events list, from cache or the server.
      *
      * @returns {*}
+     *  The promise resolve/reject
      */
-    this.get = function (options) {
-      setOptions(options);
+    this.get = function () {
+      // Reject the promise if the service it's not configured.
+      if (!Object.keys(config).length) {
+        return $q.reject(new Error('Configuration not defined.'));
+      }
 
+      // Get the Data.
       getData = $q.when(getData || getCache() || getDataFromBackend());
 
-      getData.finalize(function getDataFinalize() {
+      // Clean promise cache after promise was resolved or rejected.
+      getData.finally(function getDataFinalize() {
         getData = undefined;
       });
 
       return getData;
     };
-
-    function setOption(params) {
-      var re = /[^\/]*$/;
-
-      options = params;
-
-      // Set resource name.
-      options.name = re.exec(optiosn.url);
-
-      // Push the data transformation of exist.
-      if (angular.isDefined(options.transformResponse) && fn(options.transformResponse)) {
-        options.transformResponse = [prepareResponse, options.transformResponse];
-      }
-    }
 
     /**
      * Return data from the server as a array of objects, wrapped in a promise.,
@@ -66,12 +70,11 @@ angular.module('elementModule', [])
      */
     function getDataFromBackend() {
       var deferred = $q.defer();
-      var url = options.url;
 
       $http({
         method: 'GET',
-        url: url,
-        transformResponse: options.transformResponse
+        url: config.url,
+        transformResponse: config.transformResponse
       }).success(function (response) {
         setCache(response);
         deferred.resolve(response);
@@ -98,7 +101,7 @@ angular.module('elementModule', [])
       }, 60000);
 
       // Broadcast a change event.
-      $rootScope.$broadcast('restful' + options.name + 'Changed');
+      $rootScope.$broadcast('restfulChanged');
     }
 
     /**

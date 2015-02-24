@@ -1,0 +1,27 @@
+{
+  "name": "angular-http-plus",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ceoaliongroo/angular-http-plus",
+  "authors": [
+    "Carlos Mantilla <cmantilla@aliongroo.com>"
+  ],
+  "description": "Simple library to request data from restful services.",
+  "main": "angular-http-plus.min.js",
+  "keywords": [
+    "restful",
+    "http",
+    "request"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.3.13",
+    "angular-mocks": "~1.3.13"
+  }
+}

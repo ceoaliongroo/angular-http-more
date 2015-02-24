@@ -1,4 +1,4 @@
-# angular-http-plus
+# angular-http-plus v0.0.1
 [![Build Status](https://travis-ci.org/ceoaliongroo/angular-http-plus.svg?branch=master)](https://travis-ci.org/ceoaliongroo/angular-http-plus)
  
 Simple library to request data from restful services.

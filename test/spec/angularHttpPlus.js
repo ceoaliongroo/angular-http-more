@@ -3,7 +3,7 @@
 describe('Component: Restful', function () {
 
   // load the service's module
-  beforeEach(module('elementModule'));
+  beforeEach(module('cm.angularHttpPlus'));
 
   // instantiate service
   var $rootScope;

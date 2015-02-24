@@ -6,5 +6,4 @@ before_install:
   - 'sh -e /etc/init.d/xvfb start'
 before_script:
   - 'npm install -qg bower grunt-cli karma-cli'
-  - 'npm install -q'
   - 'bower install'

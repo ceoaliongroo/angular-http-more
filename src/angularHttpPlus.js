@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc service
- * @name clientApp.restful
+ * @name cm.angularHttpPlus.restful
  * @description
- * # restful
- * Service in to perform restful request.
+ * # Restful
+ * Service in to perform restful via $http request with extra powers.
  */
-angular.module('elementModule', [])
+angular.module('cm.angularHttpPlus', [])
   .service('Restful', function RestfulService($q, $http, $timeout, $rootScope) {
     var self = this;
 

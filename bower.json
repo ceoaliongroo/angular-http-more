@@ -2,6 +2,10 @@
   "name": "angular-http-plus",
   "version": "0.0.1",
   "homepage": "https://github.com/ceoaliongroo/angular-http-plus",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ceoaliongroo/angular-http-plus.git"
+  },
   "authors": [
     "Carlos Mantilla <cmantilla@aliongroo.com>"
   ],
